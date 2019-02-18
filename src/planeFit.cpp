@@ -12,21 +12,21 @@
  * */
 void fitPlane(const cv::Mat &points, cv::Mat& plane){
     
-	double start = static_cast<double>(cvGetTickCount());
-	int rows = points.rows;
+    double start = static_cast<double>(cvGetTickCount());
+    int rows = points.rows;
     int cols = points.cols;
-	
+
     cv::Mat centroid = cv::Mat::zeros(1,cols,CV_32FC1);
     for(int i=0;i<cols;i++)
-		{
-        for(int j=0;j<rows;j++){
+    {
+        for(int j=0;j<rows;j++)
+        {
             centroid.at<float>(0,i) += points.at<float>(j,i);
         }
-		
         centroid.at<float>(0,i)/=rows;
-		cout<<"第"<<i<<"列"<<centroid.at<float>(0,i)<<"   ";
-	}
-	cout<<endl;
+        cout<<"第"<<i<<"列"<<centroid.at<float>(0,i)<<"   ";
+    }
+    cout<<endl;
 
     cv::Mat points2 = cv::Mat::ones(rows,cols,CV_32FC1);
     for(int i=0;i<rows;i++){
@@ -38,7 +38,6 @@ void fitPlane(const cv::Mat &points, cv::Mat& plane){
     cv::gemm(points2,points,1,NULL,0,A,CV_GEMM_A_T);
     SVD::compute(A,W,U,V);
 
-	
     Mat tmpplane = cv::Mat::zeros(4,1,CV_32FC1);
 	 
     for (int c = 0; c<cols; c++){

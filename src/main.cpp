@@ -1,4 +1,5 @@
 #include "main.h"
+//#include <librealsense2/rs.hpp>
 
 //Global Variable
 Mat g_src_img = Mat::zeros(IMAGE_Y, IMAGE_X, CV_16UC3);
@@ -230,6 +231,17 @@ int main(int argc, char **argv)
 
     // 获得最大深度值
     int iMaxDepth = streamDepth.getMaxPixelValue();
+//    rs2::pipeline pipe;
+
+    //Create a configuration for configuring the pipeline with a non default profile
+//    rs2::config cfg;
+
+    //Add desired streams to configuration
+//    cfg.enable_stream(RS2_STREAM_INFRARED, IMAGE_X, IMAGE_Y, RS2_FORMAT_Y8, 30);
+//    cfg.enable_stream(RS2_STREAM_DEPTH, IMAGE_X, IMAGE_Y, RS2_FORMAT_Z16, 30);
+//    cfg.enable_stream(RS2_STREAM_COLOR, IMAGE_X, IMAGE_Y, RS2_FORMAT_BGR8, 30);
+
+//    pipe.start(cfg);
 
     namedWindow( "Depth Image" );
     namedWindow( "Color Image" );
@@ -246,9 +258,18 @@ int main(int argc, char **argv)
         streamDepth.readFrame( &frameDepth );
         streamColor.readFrame( &frameColor );
 
+//        rs2::frameset frames;
+//        for(int i = 0; i < 3; i++)
+//        {
+//            //Wait for all configured streams to produce a frame
+//            frames = pipe.wait_for_frames();
+//        }
+//        rs2::frame depth_frame = frames.get_depth_frame();
+//        rs2::frame color_frame = frames.get_color_frame();
 
         // 将深度数据转换成OpenCV格式
         const Mat mImageDepth( frameDepth.getHeight(), frameDepth.getWidth(), CV_16UC1, (void*)frameDepth.getData());
+//        const Mat mImageDepth(Size(IMAGE_X, IMAGE_Y), CV_16UC1, (void*)depth_frame.get_data(), Mat::AUTO_STEP);
 
         g_dep_img = mImageDepth.clone();
 
@@ -256,21 +277,20 @@ int main(int argc, char **argv)
         mImageDepth.convertTo( mScaledDepth, CV_8U, 255.0 / iMaxDepth );
         // 显示出深度图像
         imshow( "Depth Image", mScaledDepth );
+        imshow( "Depth Image", mImageDepth );
+
         // 同样的将彩色图像数据转化成OpenCV格式
         const Mat mImageRGB(frameColor.getHeight(), frameColor.getWidth(), CV_8UC3, (void*)frameColor.getData());
         // 首先将RGB格式转换为BGR格式
         cvtColor( mImageRGB, cImageBGR, COLOR_RGB2BGR );
+//        const Mat cImageBGR(Size(IMAGE_X, IMAGE_Y), CV_8UC3, (void*)color_frame.get_data(), Mat::AUTO_STEP);
 
         g_src_img = cImageBGR.clone();
-
-
 
         getMapData();
 
         // 然后显示彩色图像
         imshow( "Color Image", cImageBGR );
-
-        //cout<<"okokokok"<<endl;
 
         char c = waitKey(50);
         if (c == 'q') break;

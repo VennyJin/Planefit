@@ -34,11 +34,13 @@ include_directories(
 add_definitions(-O2)
 add_definitions(-Wall)
 # add_definitions(-DNDEBUG)
-set(CMAKE_BUILD_TYPE "Debug")
+#set(CMAKE_BUILD_TYPE "Debug")
+set(CMAKE_BUILD_TYPE "release")
 
 
 # Linker options
 set(LINK_OPTIONS -lpthread)
+#set(LINK_OPTIONS -lrealsense2)
 
 
 # Library path
@@ -90,8 +92,6 @@ target_link_libraries(${PROJECT_NAME} ${LINK_OPTIONS})
 target_link_libraries(${PROJECT_NAME}
     ${OpenNI2_LIBRARIES}
     ${OpenCV_LIBS}
-
 #    /usr/lib/x86_64-linux-gnu/librt.so
 #    /usr/lib/arm-linux-gnueabihf/librt.so
     )
-
